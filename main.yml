@@ -1,0 +1,18 @@
+---
+- hosts: testhost
+  vars:
+    password_salt: sjdigsifgj319gsdm
+  roles:
+  - role: python-webapp
+    app_name: foo
+    python_version: "2"
+    wsgi_env:
+      foofoo: bar
+      barquux: bar
+    wsgi_entrypoint: "wsgiref.simple_server:demo_app"
+    http_hostname: fooapp.local
+  - role: python-webapp
+    app_name: barbarquux
+    python_version: "3"
+    wsgi_entrypoint: "wsgiref.simple_server:demo_app"
+    http_hostname: fooapp.local

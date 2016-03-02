@@ -1,1 +1,3 @@
 * `ssh-add .vagrant/machines/default/virtualbox/private_key`
+* `ansible-playbook main.yml -i ./inventory.txt -v`
+* faster subsequent runs: `ansible-playbook main.yml -i ./inventory.txt -v --skip-tags=prepare`
