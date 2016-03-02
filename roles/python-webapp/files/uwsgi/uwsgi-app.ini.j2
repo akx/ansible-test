@@ -1,0 +1,24 @@
+[uwsgi]
+plugin=python{{ python_version }}
+thunder-lock
+master
+vacuum
+auto-procname
+disable-logging
+die-on-term
+
+uid={{ app_name }}
+gid={{ app_name }}
+virtualenv={{ home }}/venv
+chdir={{ home }}
+wsgi={{ wsgi_entrypoint }}
+socket={{ socket }}
+chmod-socket=666
+touch-reload={{ touch_reload_file }}
+workers={{ workers }}
+procname-prefix={{ app_name }}-
+logto={{ home }}/log/uwsgi.log
+
+{% for var, val in ({"DATABASE_URL": db_url}|combine(wsgi_env)).items()|sort %}
+env={{ var }}={{ val }}
+{% endfor %}

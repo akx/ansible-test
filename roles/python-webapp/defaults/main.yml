@@ -1,0 +1,13 @@
+home: "/var/www/{{ app_name }}"
+workers: 2
+socket: "{{ home }}/run/{{ app_name }}.sock"
+wsgi_entrypoint: "{{ app_name }}.wsgi"
+wsgi_env: {}
+touch_reload_file: "{{ home }}/run/uwsgi.reload"
+enabled: true
+db_password: "{{ (password_salt ~ app_name)|hash('sha1') }}"
+db_name: "{{ app_name[:60] }}"
+db_host: "localhost"
+db_user: "{{ app_name[:16] }}"
+db_url: 'mysql://{{ db_user }}:{{ db_password }}@{{ db_host }}/{{ db_name }}'
+http_hostname: '{{ app_name }}.dev'

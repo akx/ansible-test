@@ -1,0 +1,21 @@
+- name: create mysql database
+  mysql_db:
+    login_host: "{{ db_host }}"
+    login_user: "root"
+    login_password: "{{ mysql_root_password|default('') }}"
+    state: present
+    name: "{{ db_name }}"
+    collation: "utf8_unicode_ci"
+    encoding: "utf8"
+  when: db_user and db_name
+- name: create mysql user
+  mysql_user:
+    login_host: "{{ db_host }}"
+    login_user: "root"
+    login_password: "{{ mysql_root_password|default('') }}"
+    state: present
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    priv: "{{ db_name }}.*:ALL"
+    host: "*"
+  when: db_user and db_host

@@ -1,0 +1,13 @@
+- name: create app virtualenv
+  become: yes
+  become_user: "{{ app_name }}"
+  shell: "python{{ python_version }} -m virtualenv {{ home }}/venv"
+  args:
+    creates: "{{ home }}/venv"
+  notify: "restart webapp {{ app_name }}"  # this'll end up creating the reload file
+- name: install mysqlclient in virtualenv
+  become: yes
+  become_user: "{{ app_name }}"
+  pip:
+    executable: "{{ home }}/venv/bin/pip"
+    name: mysqlclient

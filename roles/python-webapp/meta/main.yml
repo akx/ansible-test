@@ -1,0 +1,4 @@
+allow_duplicates: yes
+dependencies:
+ - {role: appserver, tags: prepare}
+ - {role: webserver, tags: prepare}

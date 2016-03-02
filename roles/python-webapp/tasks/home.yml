@@ -1,0 +1,16 @@
+- name: ensure /var/www exists
+  become: yes
+  file: path=/var/www owner=nginx group=nginx state=directory
+- name: create user for app
+  become: yes
+  user:
+    name: "{{ app_name }}"
+    home: "{{ home }}"
+    comment: "webapp user for {{ app_name }}"
+- name: create app auxiliary directories
+  become: yes
+  become_user: "{{ app_name }}"
+  file:
+    path: "{{ home }}/{{ item }}"
+    state: directory
+  with_items: [etc, log, run, var, tmp]

@@ -1,0 +1,9 @@
+- name: check python_version var
+  fail: msg="The python-webapp role requires `python_version` to be 2 or 3" 
+  when: not (python_version == "2" or python_version == "3")
+- name: check app_name var
+  fail: msg="The python-webapp role requires `app_name` to be set and alphanumericish" 
+  when: 'not app_name|match("^[a-z][a-z0-9-]+[a-z0-9]$")'
+- name: check password_salt var
+  fail: msg="The python-webapp role requires `password_salt` to be set" 
+  when: password_salt is not defined

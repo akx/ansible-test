@@ -1,0 +1,14 @@
+- name: create app uWSGI config
+  become: yes
+  become_user: "{{ app_name }}"
+  template:
+    backup: yes
+    dest: "{{ home }}/etc/uwsgi.ini"
+    src: files/uwsgi/uwsgi-app.ini.j2
+  notify: "restart {{ app_name }}"
+- name: link or unlink config for emperor
+  become: yes
+  file:
+    path: /etc/uwsgi/vassals/{{ app_name }}.ini
+    state: "{% if enabled %}link{% else %}absent{% endif %}"
+    src: "{{ home }}/etc/uwsgi.ini"

@@ -1,0 +1,6 @@
+- include: validation.yml
+- include: home.yml
+- include: virtualenv.yml
+- include: mysql.yml
+- include: uwsgi.yml
+- include: nginx.yml

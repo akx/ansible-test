@@ -1,0 +1,14 @@
+- name: create app nginx config
+  become: yes
+  become_user: "{{ app_name }}"
+  template:
+    backup: yes
+    dest: "{{ home }}/etc/nginx.conf"
+    src: files/nginx/nginx-app.conf.j2
+- name: link or unlink config for nginx
+  become: yes
+  notify: "restart nginx"
+  file:
+    path: /etc/nginx/conf.d/{{ app_name }}.app.conf
+    state: "{% if enabled %}link{% else %}absent{% endif %}"
+    src: "{{ home }}/etc/nginx.conf"
