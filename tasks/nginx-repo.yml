@@ -1,0 +1,6 @@
+- name: install nginx signing key
+  become: yes
+  apt_key: id=7BD9BF62 url=http://nginx.org/keys/nginx_signing.key
+- name: add nginx apt source
+  become: yes
+  apt_repository: repo="deb http://nginx.org/packages/ubuntu/ trusty nginx"

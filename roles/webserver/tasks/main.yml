@@ -1,0 +1,22 @@
+- include: nginx-repo.yml
+- name: install nginx
+  apt: name=nginx state=installed
+  become: yes
+- name: generate unique dhparams for nginx
+  shell: openssl dhparam -out dhparams.pem 2048
+  become: yes
+  args:
+    chdir: /etc/nginx/
+    creates: /etc/nginx/dhparams.pem
+- name: write out nginx configuration
+  become: yes
+  template:
+    backup: yes
+    dest: /etc/nginx/nginx.conf
+    src: files/nginx.conf.j2
+  notify: restart nginx
+- name: remove nginx default configs
+  become: yes
+  file: path=/etc/nginx/conf.d/{{ item }} state=absent
+  with_items: [default.conf, example_ssl.conf]
+  notify: restart nginx
