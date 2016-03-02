@@ -1,0 +1,28 @@
+- include: ensure-pip.yml
+- name: install mysql client
+  apt: name={{ item }} state=installed
+  become: yes
+  with_items:
+   - libmysqlclient-dev
+   - mariadb-client
+- stat: path=/usr/local/bin/uwsgi
+  register: uwsgi
+- include: install-uwsgi-lts.yml
+  when: not uwsgi.stat.exists
+- name: create uwsgi upstart script
+  become: yes
+  template:
+    dest: /etc/init/uwsgi-emperor.conf
+    src: files/upstart/uwsgi-emperor.conf.j2
+- name: create uwsgi vassals directory
+  become: yes
+  file: path=/etc/uwsgi/vassals state=directory mode=0755
+- name: create uwsgi emperor configuration
+  become: yes
+  template:
+    dest: /etc/uwsgi/uwsgi-emperor.ini
+    src: files/uwsgi/uwsgi-emperor.ini.j2
+  notify: restart uwsgi-emperor
+- name: enable and start uwsgi emperor
+  become: yes
+  service: name=uwsgi-emperor state=started enabled=yes

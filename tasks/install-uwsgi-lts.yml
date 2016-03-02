@@ -1,0 +1,44 @@
+- include: install-pythons.yml
+- name: install libpcre3-dev
+  apt: name=libpcre3-dev
+  become: yes
+- name: download uWSGI LTS
+  get_url:
+    url: http://projects.unbit.it/downloads/uwsgi-2.0.12.tar.gz
+    dest: /tmp/uwsgi-2.0.12.tar.gz
+    checksum: md5:1451cab954bad0d7d7429e4d2c84b5df
+- name: untar uWSGI LTS
+  shell: cd /tmp && tar xzf uwsgi-2.0.12.tar.gz
+- name: create uWSGI buildconf
+  shell: (cat buildconf/core.ini; echo "plugin_dir=/usr/local/uwsgi") >> buildconf/usrlocal.ini
+  args:
+    chdir: /tmp/uwsgi-2.0.12
+    creates: /tmp/uwsgi-2.0.12/buildconf/usrlocal.ini
+- name: build uWSGI core
+  shell: python uwsgiconfig.py --build usrlocal
+  args:
+    chdir: /tmp/uwsgi-2.0.12
+    creates: /tmp/uwsgi-2.0.12/uwsgi
+- name: build uWSGI py2 plugin
+  shell: python2 uwsgiconfig.py --plugin plugins/python core python2
+  args:
+    chdir: /tmp/uwsgi-2.0.12
+    creates: /tmp/uwsgi-2.0.12/python2_plugin.so
+- name: build uWSGI py3 plugin
+  shell: python3 uwsgiconfig.py --plugin plugins/python core python3
+  args:
+    chdir: /tmp/uwsgi-2.0.12
+    creates: /tmp/uwsgi-2.0.12/python3_plugin.so
+- name: install compiled uWSGI
+  become: yes
+  shell: cp uwsgi /usr/local/bin
+  args:
+    chdir: /tmp/uwsgi-2.0.12
+- name: ensure plugin directory exists
+  become: yes
+  file: path=/usr/local/uwsgi state=directory mode=0755
+- name: install compiled plugins
+  become: yes
+  shell: cp *_plugin.so /usr/local/uwsgi
+  args:
+    chdir: /tmp/uwsgi-2.0.12

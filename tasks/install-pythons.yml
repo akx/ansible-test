@@ -1,0 +1,21 @@
+- name: install pythons and development necessities
+  apt: name={{ item }} state=installed
+  become: yes
+  with_items:
+   - build-essential  # required for all building
+   - libpcre3-dev  # perl regular expressions
+   - libffi-dev  # cffi dependency
+   - libssl-dev  # crypto dependency
+   # PIL(low) dependencies:
+   - libtiff5-dev
+   - libjpeg8-dev
+   - zlib1g-dev
+   - libfreetype6-dev
+   - liblcms2-dev
+   - libwebp-dev
+   # oh, and python itself!
+   - python
+   - python-dev
+   - python3
+   - python3-dev
+   - python-mysqldb  # required for ansible's mysql management

@@ -1,0 +1,3 @@
+start on net-device-up
+respawn
+exec /usr/local/bin/uwsgi --ini /etc/uwsgi/uwsgi-emperor.ini

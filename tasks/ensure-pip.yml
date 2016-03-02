@@ -1,0 +1,19 @@
+- include: install-pythons.yml
+- stat: path=/usr/local/bin/pip
+  register: pip2
+- stat: path=/usr/local/bin/pip3
+  register: pip3
+- name: install pip for python 2
+  shell: curl https://bootstrap.pypa.io/get-pip.py | python -
+  become: yes
+  when: not pip2.stat.exists
+- name: install pip for python 3
+  shell: curl https://bootstrap.pypa.io/get-pip.py | python3 -
+  become: yes
+  when: not pip3.stat.exists
+- name: "install virtualenv, wheel and ndg-httpsclient for both pythons"
+  become: yes
+  pip: executable={{ item[0] }} name={{ item[1] }} state=present
+  with_nested:
+  - [pip2, pip3]
+  - [virtualenv, wheel, "ndg-httpsclient"]
