@@ -1,0 +1,11 @@
+- name: install apt-transport-https
+  apt: name=apt-transport-https state=installed
+  become: yes
+  # the https transport MUST be installed before a https deb source exists, otherwise
+  # things break horribly
+- name: install nodesource signing key
+  become: yes
+  apt_key: id=68576280 url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+- name: add nodesource apt source
+  become: yes
+  apt_repository: repo="deb https://deb.nodesource.com/node_4.x trusty main"

@@ -1,0 +1,13 @@
+- include: apt-update.yml
+- include: etckeeper.yml
+- include: nodesource-repo.yml
+- name: install necessities
+  apt: name={{ item }} state=installed
+  become: yes
+  with_items:
+   - build-essential # required to build stuff
+   - curl # cURL groks URLs
+   - htop # to keep an eye on resources
+   - nano # another editor
+   - nodejs # fancy javascripties
+   - vim # an editor

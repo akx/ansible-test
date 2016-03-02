@@ -1,0 +1,18 @@
+- name: check if etckeeper is already initialized
+  stat: path=/etc/.git
+  register: etcgit
+- name: install git and etckeeper
+  apt: name={{ item }} state=installed
+  become: yes
+  with_items:
+   - git
+   - etckeeper
+  when: not etcgit.stat.exists
+- name: set etckeeper VCS to git
+  become: true
+  lineinfile: dest=/etc/etckeeper/etckeeper.conf regexp='^VCS=' line='VCS=git'
+  when: not etcgit.stat.exists
+- name: initialize etckeeper
+  become: true
+  shell: 'etckeeper init && etckeeper commit "Initial commit"'
+  when: not etcgit.stat.exists
